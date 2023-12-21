@@ -189,8 +189,6 @@ local hero = {
 	animacao_virar = false,
 }
 
-
-
 local function desenhar_animacao(personagem)
 	local animacao = dic_animacao[personagem.animacao_nome]
 
