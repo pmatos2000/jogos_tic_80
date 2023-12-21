@@ -32,8 +32,13 @@ function OVR()
 	log_exibir()
 end
 
+local dic_nome_animacao = {
+	HERO_PARADO = "HERO_PARADO",
+	HERO_VOANDO = "HERO_VOANDO",
+}
+
 local dic_animacao = {
-	HERO_PARADO = {
+	[dic_nome_animacao.HERO_PARADO] = {
 		largura = 16,
 		frames = {
 			{
@@ -44,8 +49,6 @@ local dic_animacao = {
 				},
 				{
 					id_sprite = 256,
-					dx = 0,
-					dy = 0,
 				},
 				{
 					id_sprite = 259,
@@ -54,18 +57,17 @@ local dic_animacao = {
 				},
 				{
 					id_sprite = 257,
-					dx = 0,
 					dy = 8,
 				},
 				{
 					id_sprite = 258,
-					dx = 0,
 					dy = 16,
 				},
 			}
 		}
 	},
-	HERO_VOANDO = {
+	[dic_nome_animacao.HERO_VOANDO] = {
+		largura = 16,
 		frames = {
 			{
 				{
@@ -75,8 +77,6 @@ local dic_animacao = {
 				},
 				{
 					id_sprite = 256,
-					dx = 0,
-					dy = 0,
 				},
 				{
 					id_sprite = 259,
@@ -85,12 +85,10 @@ local dic_animacao = {
 				},
 				{
 					id_sprite = 257,
-					dx = 0,
 					dy = 8,
 				},
 				{
 					id_sprite = 274,
-					dx = 0,
 					dy = 16,
 				},
 			},
@@ -102,8 +100,6 @@ local dic_animacao = {
 				},
 				{
 					id_sprite = 256,
-					dx = 0,
-					dy = 0,
 				},
 				{
 					id_sprite = 259,
@@ -112,12 +108,10 @@ local dic_animacao = {
 				},
 				{
 					id_sprite = 257,
-					dx = 0,
 					dy = 8,
 				},
 				{
 					id_sprite = 274,
-					dx = 0,
 					dy = 16,
 				},
 			},
@@ -129,8 +123,6 @@ local dic_animacao = {
 				},
 				{
 					id_sprite = 256,
-					dx = 0,
-					dy = 0,
 				},
 				{
 					id_sprite = 259,
@@ -139,12 +131,10 @@ local dic_animacao = {
 				},
 				{
 					id_sprite = 257,
-					dx = 0,
 					dy = 8,
 				},
 				{
 					id_sprite = 274,
-					dx = 0,
 					dy = 16,
 				},
 			},
@@ -156,8 +146,6 @@ local dic_animacao = {
 				},
 				{
 					id_sprite = 256,
-					dx = 0,
-					dy = 0,
 				},
 				{
 					id_sprite = 259,
@@ -166,12 +154,10 @@ local dic_animacao = {
 				},
 				{
 					id_sprite = 257,
-					dx = 0,
 					dy = 8,
 				},
 				{
 					id_sprite = 274,
-					dx = 0,
 					dy = 16,
 				},
 			},
@@ -186,15 +172,32 @@ local hero = {
 	y = 48,
 	animacao_nome = "HERO_VOANDO",
 	frame_atual = 1,
-	animacao_virar = false,
+	animacao_virar = true,
+	pulando = false,
+	voando = false,
 }
 
+local function alterar_animacao(obj, animacao_nome)
+	obj.animacao_nome = animacao_nome
+	obj.frame_atual = 1
+end
+
 local function atualizar_hero()
+	--Movimenta o hero
 	if btn(2) then
 		hero.x = hero.x - 1;
+		hero.animacao_virar = true;
 	end
 	if btn(3) then
 		hero.x = hero.x + 1;
+		hero.animacao_virar = false;
+	end
+
+	--Atualiza a animação
+	if hero.animacao_nome ~= dic_nome_animacao.HERO_VOANDO and (btn(2) or btn(3)) then
+		alterar_animacao(hero, dic_nome_animacao.HERO_VOANDO)
+	elseif hero.animacao_nome ~= dic_nome_animacao.HERO_PARADO and not (btn(2) or btn(3)) then
+		alterar_animacao(hero, dic_nome_animacao.HERO_PARADO)
 	end
 end
 
@@ -205,11 +208,22 @@ local function desenhar_animacao(obj)
 	local lista_sprite = animacao.frames[obj.frame_atual]
 	for i = 1, #lista_sprite do
 		local sprite = lista_sprite[i]
+		--Pega os valores do sprite ou valores padões
+		local dx = sprite.dx or 0
+		local dy = sprite.dy or 0
+		--Calcula a posição inicial do sprite
+		local x = dx + obj.x;
+		if obj.animacao_virar then
+			x = 2 * obj.x + animacao.largura / 2 - x;
+		end
+		--Desenha na tela 
 		spr(
 			sprite.id_sprite,
-			sprite.dx + obj.x,
-			sprite.dy + obj.y,
-			-1
+			x,
+			dy + obj.y,
+			-1,
+			1,
+			obj.animacao_virar and 1 or 0
 		)
 	end
 	--Atualiza o frame da animacao
