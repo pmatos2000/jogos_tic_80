@@ -34,6 +34,7 @@ end
 
 local dic_animacao = {
 	HERO_PARADO = {
+		largura = 16,
 		frames = {
 			{
 				{
@@ -88,7 +89,7 @@ local dic_animacao = {
 					dy = 8,
 				},
 				{
-					id_sprite = 258,
+					id_sprite = 274,
 					dx = 0,
 					dy = 16,
 				},
@@ -115,7 +116,7 @@ local dic_animacao = {
 					dy = 8,
 				},
 				{
-					id_sprite = 258,
+					id_sprite = 274,
 					dx = 0,
 					dy = 16,
 				},
@@ -142,7 +143,7 @@ local dic_animacao = {
 					dy = 8,
 				},
 				{
-					id_sprite = 258,
+					id_sprite = 274,
 					dx = 0,
 					dy = 16,
 				},
@@ -169,14 +170,13 @@ local dic_animacao = {
 					dy = 8,
 				},
 				{
-					id_sprite = 258,
+					id_sprite = 274,
 					dx = 0,
 					dy = 16,
 				},
 			},
 		}
 	},
-
 }
 
 local hero = {
@@ -189,9 +189,18 @@ local hero = {
 	animacao_virar = false,
 }
 
+local function atualizar_hero()
+	if btn(2) then
+		hero.x = hero.x - 1;
+	end
+	if btn(3) then
+		hero.x = hero.x + 1;
+	end
+end
+
+
 local function desenhar_animacao(obj)
 	local animacao = dic_animacao[obj.animacao_nome]
-
 	--Desenha o sprites na tela
 	local lista_sprite = animacao.frames[obj.frame_atual]
 	for i = 1, #lista_sprite do
@@ -203,7 +212,6 @@ local function desenhar_animacao(obj)
 			-1
 		)
 	end
-
 	--Atualiza o frame da animacao
 	if obj.frame_atual == #animacao.frames then
 		obj.frame_atual = 1
@@ -212,9 +220,12 @@ local function desenhar_animacao(obj)
 	end
 end
 
+
+
 function TIC()
 	cls()
 	log_limpar()
+	atualizar_hero()
 	desenhar_animacao(hero)
 end
 
@@ -230,6 +241,7 @@ end
 -- 004:7777777700077000000220000002200000022000000220000002200000022000
 -- 005:0777777000077000000220000002200000022000000220000002200000022000
 -- 006:0007700000077000000220000002200000022000000220000002200000022000
+-- 018:0666666006666660000666000066600006660000066000000600000000000000
 -- </SPRITES>
 
 -- <WAVES>
