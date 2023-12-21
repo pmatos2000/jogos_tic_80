@@ -214,8 +214,6 @@ local function desenhar_animacao(personagem)
 	end
 end
 
-
-
 function TIC()
 	cls()
 	log_limpar()
