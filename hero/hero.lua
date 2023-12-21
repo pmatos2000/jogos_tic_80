@@ -14,9 +14,9 @@ local logs = {}
 
 local function log_exibir()
 	local y = 4
-	for d=1,#logs do
-		print(logs[d],4,y,4)
-		y=y+8
+	for d = 1, #logs do
+		print(logs[d], 4, y, 4)
+		y = y + 8
 	end
 end
 
@@ -33,35 +33,150 @@ function OVR()
 end
 
 local dic_animacao = {
-	HERO_PARADO =  {
+	HERO_PARADO = {
 		frames = {
 			{
-				id_sprite = 260,
-				dx = -8,
-				dy = 0,
+				{
+					id_sprite = 260,
+					dx = -8,
+					dy = 0,
+				},
+				{
+					id_sprite = 256,
+					dx = 0,
+					dy = 0,
+				},
+				{
+					id_sprite = 259,
+					dx = -8,
+					dy = 8,
+				},
+				{
+					id_sprite = 257,
+					dx = 0,
+					dy = 8,
+				},
+				{
+					id_sprite = 258,
+					dx = 0,
+					dy = 16,
+				},
+			}
+		}
+	},
+	HERO_VOANDO = {
+		frames = {
+			{
+				{
+					id_sprite = 260,
+					dx = -8,
+					dy = 0,
+				},
+				{
+					id_sprite = 256,
+					dx = 0,
+					dy = 0,
+				},
+				{
+					id_sprite = 259,
+					dx = -8,
+					dy = 8,
+				},
+				{
+					id_sprite = 257,
+					dx = 0,
+					dy = 8,
+				},
+				{
+					id_sprite = 258,
+					dx = 0,
+					dy = 16,
+				},
 			},
 			{
-				id_sprite = 256,
-				dx = 0,
-				dy = 0,
+				{
+					id_sprite = 261,
+					dx = -8,
+					dy = 0,
+				},
+				{
+					id_sprite = 256,
+					dx = 0,
+					dy = 0,
+				},
+				{
+					id_sprite = 259,
+					dx = -8,
+					dy = 8,
+				},
+				{
+					id_sprite = 257,
+					dx = 0,
+					dy = 8,
+				},
+				{
+					id_sprite = 258,
+					dx = 0,
+					dy = 16,
+				},
 			},
 			{
-				id_sprite = 259,
-				dx = -8,
-				dy = 8,
+				{
+					id_sprite = 262,
+					dx = -8,
+					dy = 0,
+				},
+				{
+					id_sprite = 256,
+					dx = 0,
+					dy = 0,
+				},
+				{
+					id_sprite = 259,
+					dx = -8,
+					dy = 8,
+				},
+				{
+					id_sprite = 257,
+					dx = 0,
+					dy = 8,
+				},
+				{
+					id_sprite = 258,
+					dx = 0,
+					dy = 16,
+				},
 			},
 			{
-				id_sprite = 257,
-				dx = 0,
-				dy = 8,
-			},
-			{
-				id_sprite = 258,
-				dx = 0,
-				dy = 16,
+				{
+					id_sprite = 261,
+					dx = -8,
+					dy = 0,
+				},
+				{
+					id_sprite = 256,
+					dx = 0,
+					dy = 0,
+				},
+				{
+					id_sprite = 259,
+					dx = -8,
+					dy = 8,
+				},
+				{
+					id_sprite = 257,
+					dx = 0,
+					dy = 8,
+				},
+				{
+					id_sprite = 258,
+					dx = 0,
+					dy = 16,
+				},
 			},
 		}
-	}
+	},
+
 }
 
 local hero = {
@@ -69,27 +184,41 @@ local hero = {
 	pontos = 0,
 	x = 32,
 	y = 48,
-	animacao_nome = "HERO_PARADO",
-	animacao_frame = 0,
+	animacao_nome = "HERO_VOANDO",
+	frame_atual = 1,
 	animacao_virar = false,
 }
 
 
 
-local function desenhar_animacao (animacao_nome, frame, x, y)
-	local animacao = dic_animacao[animacao_nome]
+local function desenhar_animacao(personagem)
+	local animacao = dic_animacao[personagem.animacao_nome]
 	if animacao then
-		for i = 1, #animacao.frames do
-			frame = animacao.frames[i]
-			spr(
-				frame.id_sprite,
-				frame.dx + x,
-				frame.dy + y,
-				-1
-			)
+		--Desenha o sprites na tela
+		local lista_sprite = animacao.frames[personagem.frame_atual]
+		if lista_sprite then
+			for i = 1, #lista_sprite do
+				local sprite = lista_sprite[i]
+				spr(
+					sprite.id_sprite,
+					sprite.dx + personagem.x,
+					sprite.dy + personagem.y,
+					-1
+				)
+			end
+
+			--atualiza o frame da animacao
+			if personagem.frame_atual == #animacao.frames then
+				personagem.frame_atual = 1
+			else
+				personagem.frame_atual = personagem.frame_atual + 1
+			end
+
+		else
+			log_adicionar("Frame: " .. personagem.frame_atual  .. " da animacao: " .. personagem.animacao_nome)
 		end
 	else
-		log_adicionar("Animacao nao encontrada: " .. animacao_nome);
+		log_adicionar("Animacao nao encontrada: " .. personagem.animacao_nome);
 	end
 end
 
@@ -98,12 +227,8 @@ end
 function TIC()
 	cls()
 	log_limpar()
-	desenhar_animacao(hero.animacao_nome, hero.animacao_frame, hero.x, hero.y)
+	desenhar_animacao(hero)
 end
-
-
-
-
 
 -- <TILES>
 -- 001:3333333333333333333333333333333333333333333333333333333333333333
@@ -136,4 +261,3 @@ end
 -- <PALETTE>
 -- 000:1a1c2c5d275db13e5330303041a6f604007dfffffff2c6000000080c040000080c000408000c00180404380404040004
 -- </PALETTE>
-
