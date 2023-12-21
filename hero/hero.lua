@@ -193,32 +193,24 @@ local hero = {
 
 local function desenhar_animacao(personagem)
 	local animacao = dic_animacao[personagem.animacao_nome]
-	if animacao then
-		--Desenha o sprites na tela
-		local lista_sprite = animacao.frames[personagem.frame_atual]
-		if lista_sprite then
-			for i = 1, #lista_sprite do
-				local sprite = lista_sprite[i]
-				spr(
-					sprite.id_sprite,
-					sprite.dx + personagem.x,
-					sprite.dy + personagem.y,
-					-1
-				)
-			end
 
-			--atualiza o frame da animacao
-			if personagem.frame_atual == #animacao.frames then
-				personagem.frame_atual = 1
-			else
-				personagem.frame_atual = personagem.frame_atual + 1
-			end
+	--Desenha o sprites na tela
+	local lista_sprite = animacao.frames[personagem.frame_atual]
+	for i = 1, #lista_sprite do
+		local sprite = lista_sprite[i]
+		spr(
+			sprite.id_sprite,
+			sprite.dx + personagem.x,
+			sprite.dy + personagem.y,
+			-1
+		)
+	end
 
-		else
-			log_adicionar("Frame: " .. personagem.frame_atual  .. " da animacao: " .. personagem.animacao_nome)
-		end
+	--Atualiza o frame da animacao
+	if personagem.frame_atual == #animacao.frames then
+		personagem.frame_atual = 1
 	else
-		log_adicionar("Animacao nao encontrada: " .. personagem.animacao_nome);
+		personagem.frame_atual = personagem.frame_atual + 1
 	end
 end
 
