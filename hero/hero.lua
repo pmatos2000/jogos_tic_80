@@ -189,26 +189,26 @@ local hero = {
 	animacao_virar = false,
 }
 
-local function desenhar_animacao(personagem)
-	local animacao = dic_animacao[personagem.animacao_nome]
+local function desenhar_animacao(obj)
+	local animacao = dic_animacao[obj.animacao_nome]
 
 	--Desenha o sprites na tela
-	local lista_sprite = animacao.frames[personagem.frame_atual]
+	local lista_sprite = animacao.frames[obj.frame_atual]
 	for i = 1, #lista_sprite do
 		local sprite = lista_sprite[i]
 		spr(
 			sprite.id_sprite,
-			sprite.dx + personagem.x,
-			sprite.dy + personagem.y,
+			sprite.dx + obj.x,
+			sprite.dy + obj.y,
 			-1
 		)
 	end
 
 	--Atualiza o frame da animacao
-	if personagem.frame_atual == #animacao.frames then
-		personagem.frame_atual = 1
+	if obj.frame_atual == #animacao.frames then
+		obj.frame_atual = 1
 	else
-		personagem.frame_atual = personagem.frame_atual + 1
+		obj.frame_atual = obj.frame_atual + 1
 	end
 end
 
